@@ -1,10 +1,7 @@
 package loginsystem;
 
-
 import java.util.List;
-import loginsystem.utils.InputReader;
-import loginsystem.utils.UserTypes;
-import loginsystem.utils.Users;
+import loginsystem.utils.*;
 
 /**
  *
