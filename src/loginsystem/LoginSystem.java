@@ -1,5 +1,6 @@
 package loginsystem;
 
+import loginsystem.models.Users;
 import java.util.List;
 import loginsystem.utils.*;
 
@@ -8,13 +9,13 @@ import loginsystem.utils.*;
  * @author luanp
  */
 public class LoginSystem {
-    private static String username, password, userType;
-    private static final Users users = new Users();
-    private static List<String> usersList = users.readFile();
+    private static UsersList file = new UsersList();
+    private static List<Users> usersList = file.readFile();
     private static final InputReader sc = new InputReader();
     
     
     public static void main(String[] args){
+        String username, password, userType;
         
         while(true){
             System.out.println("Bem-Vindo ao sistema!");
@@ -34,7 +35,7 @@ public class LoginSystem {
                     username = sc.getNextLine();
                     
                     int index = -1;
-                    while((index = users.searchName(usersList, username)) < 0){
+                    while((index = file.searchName(usersList, username)) < 0){
                         System.out.println("Username doesn't exists!");
                         System.out.print("Username: ");
                         username = sc.getNextLine();
@@ -43,21 +44,20 @@ public class LoginSystem {
                     System.out.print("Password: ");
                     password = sc.getNextLine();
                     
-                    while(!(users.verifyPassword(usersList, index, username, password))){
+                    Users user = usersList.get(index);
+                    while(!(user.verifyPassword(password))){
                         System.out.println("Invalid Password!");
                         System.out.print("Passowrd: ");
                         password = sc.getNextLine();
                     }
                     
                     System.out.println("Bem-vindo " + username + '!');
-                    userType = users.getUserType(usersList, username);
-                    
-                    mainMenu();
+                    mainMenu(user);
                     break;
                 case 2:
                     System.out.print("Username: ");
                     username = sc.getNextLine();
-                    while(users.searchName(usersList, username) != -1){
+                    while(file.searchName(usersList, username) != -1){
                         System.out.println("Username already exists!");
                         System.out.print("Username: ");
                         username = sc.getNextLine();
@@ -75,11 +75,11 @@ public class LoginSystem {
                     }
                     userType = sc.getNextLine();
                     
-                    usersList.add(username + ',' + password + ',' + userType);
+                    usersList.add(new Users(username, password, userType));
                     
                     break;
                 case 3:
-                    users.writeFile(usersList);
+                    file.writeFile(usersList);
                     System.exit(0);
                 default:
                     System.out.println("Opção Inválida! Tente Novamente!");
@@ -88,7 +88,7 @@ public class LoginSystem {
         }
     }
     
-    public static void mainMenu(){
+    public static void mainMenu(Users user){
         while(true){
             System.out.println("01 - Configurações da Conta");
             System.out.println("02 - Comprar (Usuário)");
@@ -98,21 +98,20 @@ public class LoginSystem {
 
             switch(sc.getNextInt()){
                 case 1:
-                    accountConfig();
+                    accountConfig(user);
                     break;
                 case 2:
                     // TODO
                     break;
                 case 3:
-                    if(userType.equals("USER")){
+                    if(user.getUserType().equals("USER")){
                         System.out.println("Permission denied!");
                     } else{
-                        System.out.println(userType);
                         // TODO
                     }
                     break;
                 case 4:
-                    if(userType.equals("MANAGER")){
+                    if(user.getUserType().equals("MANAGER")){
                         // TODO
                     } else {
                         System.out.println("Permission denied!");
@@ -120,30 +119,30 @@ public class LoginSystem {
                     break;
 
                 case 5:
-                    username = "";
-                    password = "";
-                    userType = "";
                     return;
             }
         }
     }
     
-    public static void accountConfig(){
-        System.out.println("Username: " + username);
+    public static void accountConfig(Users user){
+        System.out.println("Username: " + user.getUsername());
         System.out.println("01 - Alterar Senha");
         System.out.println("02 - Voltar");
         
         switch(sc.getNextInt()){
             case 1:
+                String password;
                 do{
                     System.out.print("New Password: ");
                     password = sc.getNextLine();
                     System.out.print("Confirm Password: ");
                 } while(!(sc.getNextLine().equals(password)));
-                users.changePassword(usersList, username, password);
+                user.changePassword(password);
+                usersList.set(file.searchName(usersList, user.getUsername()), user);
+                
                 break;
             case 2:
                 break;
         }
-    }
+    }   
 }

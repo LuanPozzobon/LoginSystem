@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import loginsystem.models.Users;
 
 /**
  *
  * @author luanp
  */
-public class Users{
-    
-    private Object openFile(char flag){
+public class UsersList {
+        private Object openFile(char flag){
         if(flag == 'r'){
             try {
                 return new BufferedReader(new InputStreamReader(new FileInputStream("./users.txt"), "UTF-8"));
@@ -43,11 +43,11 @@ public class Users{
         return null;
     }
     
-    public List<String> readFile(){
+    public List<Users> readFile(){
         
         BufferedReader file = (BufferedReader) openFile('r');
         String line;
-        List<String> users = new ArrayList<>();
+        List<Users> users = new ArrayList<>();
         
         if(file == null){
             return users;
@@ -55,7 +55,7 @@ public class Users{
         
         try {
             while((line = file.readLine()) != null){
-                users.add(line);
+                users.add(new Users(line));
             }
             
             file.close();
@@ -66,7 +66,7 @@ public class Users{
         return users;
     }
     
-    public boolean writeFile(List<String> users){
+    public boolean writeFile(List<Users> users){
         try {
             BufferedWriter file = (BufferedWriter) openFile('w');
             
@@ -74,8 +74,8 @@ public class Users{
                 return false;
             }
             
-            for(String user : users){
-                file.write(user + '\n');
+            for(Users user : users){
+                file.write(user.toString());
             }
             file.close();
             return true;
@@ -86,46 +86,18 @@ public class Users{
         return false;
     }
     
-    public int searchName(List<String> users, String username){
+    public int searchName(List<Users> users, String username){
         if(users == null){
             return -1;
         }
+        
         for(int i = 0; i < users.size(); ++i){
-            String name = "";
-            for(int j = 0; users.get(i).charAt(j) != ','; ++j){
-                name += users.get(i).charAt(j);
-            }
-            if(name.equals(username)){
+            Users user = users.get(i);
+            if(user.getUsername().equals(username)){
                 return i;
             }
-        }
         
+        }
         return -1;
-    }
-    
-    public boolean verifyPassword(List<String> users, int index, String username, String password){
-        String tmp = "";
-        for(int i = username.length() + 1; users.get(index).charAt(i) != ','; ++i){
-            tmp += users.get(index).charAt(i);
-        }
-        return password.equals(tmp);
-    }
-    
-    public void changePassword(List<String> users, String username, String password){
-        int index = searchName(users, username);
-        String userType = getUserType(users, username);
-        users.set(index, username + ',' + password + ',' + userType);
-    }
-    
-    public String getUserType(List<String> users, String username){
-        int index = searchName(users, username);
-        String user = users.get(index);
-        String userType = "";
-        int i;
-        for(i = username.length() + 1; user.charAt(i) != ','; ++i){}
-        for(i = i + 1; i < user.length(); ++i){
-            userType += user.charAt(i);
-        }
-        return userType;
     }
 }
