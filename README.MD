@@ -1,7 +1,7 @@
 <h1 align="center">:file_cabinet: Sistema de Login</h1>
 
 ## :memo: Descrição
-Sistemas de autenticação e autorização de usuários.
+Sistemas de autenticação e autorização de usuários. <br>
 Projeto desenvolvido com o objetivo de estudar sobre autenticação.
 
 ## :books: Funcionalidades
