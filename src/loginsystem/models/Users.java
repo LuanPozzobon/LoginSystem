@@ -16,11 +16,6 @@ public class Users{
         this.password = password;
         this.userType = userType;
     }
-    
-    private Users(Users user, String newPassword){
-        Users updatedUser = new Users(user.username, user.password, user.userType);
-        updatedUser.password = newPassword;
-    }
    
     public Users(String line){
         int i;
@@ -34,24 +29,6 @@ public class Users{
             userType += line.charAt(i);
         }
         
-    }
-    
-    private void parseUsername(String line){
-        for(int i = 0; line.charAt(i) != ','; ++i){
-            username += line.charAt(i);
-        }
-    }
-    
-    private void parsePassword(String line){
-        for(int i = username.length() + 1; line.charAt(i) != ','; ++i){
-            password += line.charAt(i);
-        }
-    }
-    
-    private void parseUserType(String line){
-        for(int i = password.length() + 1; i < line.length(); ++i){
-            userType += line.charAt(i);
-        }
     }
     
     public boolean verifyPassword(String password){

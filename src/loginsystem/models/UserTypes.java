@@ -1,4 +1,4 @@
-package loginsystem.utils;
+package loginsystem.models;
 
 /**
  *

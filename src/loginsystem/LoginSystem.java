@@ -1,5 +1,6 @@
 package loginsystem;
 
+import loginsystem.models.UserTypes;
 import loginsystem.models.Users;
 import java.util.List;
 import loginsystem.utils.*;
